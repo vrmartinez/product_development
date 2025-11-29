@@ -467,6 +467,9 @@ MLFLOW_CHAMPION_ALIAS = "champion"       # Alias del modelo en producción
 mlflow ui --backend-store-uri mlruns
 
 # Abrir en el navegador: http://localhost:5000
+
+# Si en Windows aparece error de multiprocessing, usar un solo worker:
+mlflow ui --backend-store-uri mlruns --workers 1
 ```
 
 ### Características de MLflow en el Proyecto
