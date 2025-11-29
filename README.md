@@ -451,6 +451,12 @@ predictions = load_and_predict(prepared_data)
 
 El proyecto utiliza **MLflow** para el seguimiento de experimentos y registro de modelos.
 
+### Dashboard de Experimentos
+
+![MLflow Experiments Dashboard](reports/figures/mlflow_experiments.png)
+
+*Interfaz de MLflow mostrando los experimentos de entrenamiento con diferentes modelos (XGBoost, GradientBoosting, RandomForest, LinearRegression).*
+
 ### Configuración de MLflow
 
 ```python
@@ -539,6 +545,55 @@ pytest tests/test_data.py
 # Probar ejemplos de la API (requiere que la API esté corriendo)
 python tests/test_api_examples.py
 ```
+
+---
+
+## 🔍 Análisis de Código - Pylint
+
+El proyecto ha sido analizado con **Pylint** para asegurar la calidad del código.
+
+### Puntuación Actual
+
+```
+📊 Your code has been rated at 9.10/10
+```
+
+### Resumen de Advertencias
+
+La mayoría de las advertencias son convenciones de nomenclatura (C0103) relacionadas con variables como `X`, `X_train`, `X_test`, que siguen la convención estándar de machine learning para representar matrices de características.
+
+| Tipo | Código | Descripción | Cantidad |
+|------|--------|-------------|----------|
+| Convention | C0103 | Variables que no siguen snake_case (`X`, `X_train`, etc.) | 26 |
+| Convention | C0104 | Nombre no permitido (`bar` en plots.py) | 1 |
+| Warning | W0611 | Imports no utilizados | 5 |
+| Warning | W0612 | Variables no utilizadas | 3 |
+| Warning | W0613 | Argumentos no utilizados | 3 |
+| Refactor | R0917 | Demasiados argumentos posicionales | 1 |
+
+### Detalle por Módulo
+
+| Módulo | Advertencias |
+|--------|--------------|
+| `product_development.dataset` | 3 (naming conventions) |
+| `product_development.features` | 4 (naming conventions) |
+| `product_development.plots` | 1 (disallowed name) |
+| `product_development.run_pipeline` | 16 (naming, unused imports/vars) |
+| `product_development.transformers` | 4 (naming conventions) |
+| `product_development.modeling.predict` | 3 (naming conventions) |
+| `product_development.modeling.train` | 5 (naming, unused args/vars) |
+
+### Ejecutar Pylint
+
+```bash
+# Ejecutar análisis de pylint
+make pylint
+
+# O directamente
+pylint product_development/ --output-format=text > pylint_report.txt
+```
+
+> **Nota:** Las convenciones de nomenclatura con `X` y `X_train` son intencionales y siguen el estándar de scikit-learn para matrices de características.
 
 ---
 
