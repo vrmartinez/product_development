@@ -272,14 +272,8 @@ def train_and_evaluate_models(
                     mlflow.log_param("val_samples", len(X_val))
                     mlflow.log_param("n_features", X_train.shape[1])
 
-                    # Registrar modelo en MLflow con input_example para signature
-                    # Usar una muestra pequeña para el input_example
-                    input_example = X_train[:5] if len(X_train) >= 5 else X_train
-                    mlflow.sklearn.log_model(
-                        model,
-                        name="model",
-                        input_example=input_example
-                    )
+                    # NO registrar modelo aquí para evitar error de pydantic v1
+                    # El modelo final se registrará después con register_model_to_mlflow
 
                     results[model_name] = metrics
                     run_ids[model_name] = run.info.run_id
@@ -391,7 +385,7 @@ def register_model_to_mlflow(
     best_model_name: str,
     metrics: Dict[str, float],
     register_as_champion: bool = False,
-    input_example: pd.DataFrame = None
+    input_example: pd.DataFrame = None  # Se mantiene por compatibilidad pero no se usa
 ) -> Optional[str]:
     """
     Registra un pipeline completo en MLflow Model Registry.
@@ -409,7 +403,7 @@ def register_model_to_mlflow(
     register_as_champion : bool
         Si True, registra el modelo como champion.
     input_example : pd.DataFrame, opcional
-        Ejemplo de entrada para inferir la signature del modelo.
+        Ejemplo de entrada (no usado actualmente por compatibilidad con pydantic v1).
 
     Retorna
     -------
@@ -422,40 +416,53 @@ def register_model_to_mlflow(
             # Registrar métricas finales
             mlflow.log_metrics(metrics)
             mlflow.log_param("best_model_type", best_model_name)
-            mlflow.log_param("pipeline_steps", [step[0] for step in pipeline.steps])
+            mlflow.log_param("pipeline_steps", str([step[0] for step in pipeline.steps]))
 
-            # Registrar el pipeline completo con input_example para signature
-            model_info = mlflow.sklearn.log_model(
-                pipeline,
-                name="pipeline",
-                registered_model_name=model_name,
-                input_example=input_example
-            )
+            # Guardar el pipeline como archivo y registrar como artefacto
+            # Esto evita el problema de pydantic v1 vs v2
+            import tempfile
+            import os
+            with tempfile.TemporaryDirectory() as tmpdir:
+                model_path = os.path.join(tmpdir, "pipeline.pkl")
+                joblib.dump(pipeline, model_path)
+                mlflow.log_artifact(model_path, artifact_path="model")
+            
+            logger.info(f"Pipeline registrado en MLflow como artefacto")
 
-            logger.info(f"Pipeline registrado en MLflow: {model_info.model_uri}")
-
-            # Obtener la versión del modelo registrado
+            # Registrar el modelo en el Model Registry manualmente
             client = MlflowClient()
-            latest_versions = client.get_latest_versions(model_name)
+            run_id = run.info.run_id
+            artifact_uri = f"runs:/{run_id}/model/pipeline.pkl"
+            
+            # Crear o actualizar el modelo registrado
+            try:
+                client.create_registered_model(model_name)
+            except Exception:
+                pass  # El modelo ya existe
+            
+            # Crear nueva versión
+            model_version = client.create_model_version(
+                name=model_name,
+                source=f"runs:/{run_id}/model",
+                run_id=run_id
+            )
+            version = model_version.version
+            logger.info(f"Modelo registrado como versión: {version}")
 
-            if latest_versions:
-                version = latest_versions[0].version
-                logger.info(f"Modelo registrado como versión: {version}")
+            if register_as_champion:
+                # Asignar alias de champion
+                client.set_registered_model_alias(
+                    model_name, MLFLOW_CHAMPION_ALIAS, version
+                )
+                logger.info(f"Modelo versión {version} marcado como '{MLFLOW_CHAMPION_ALIAS}'")
+            else:
+                # Asignar alias de challenger
+                client.set_registered_model_alias(
+                    model_name, MLFLOW_CHALLENGER_ALIAS, version
+                )
+                logger.info(f"Modelo versión {version} marcado como '{MLFLOW_CHALLENGER_ALIAS}'")
 
-                if register_as_champion:
-                    # Asignar alias de champion
-                    client.set_registered_model_alias(
-                        model_name, MLFLOW_CHAMPION_ALIAS, version
-                    )
-                    logger.info(f"Modelo versión {version} marcado como '{MLFLOW_CHAMPION_ALIAS}'")
-                else:
-                    # Asignar alias de challenger
-                    client.set_registered_model_alias(
-                        model_name, MLFLOW_CHALLENGER_ALIAS, version
-                    )
-                    logger.info(f"Modelo versión {version} marcado como '{MLFLOW_CHALLENGER_ALIAS}'")
-
-                return version
+            return version
 
     except Exception as ex:  # pylint: disable=broad-except
         logger.error(f"Error registrando modelo en MLflow: {ex}")

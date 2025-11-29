@@ -1,28 +1,28 @@
 {
-  "best_model": "LinearRegression",
-  "rmse": Infinity,
-  "mse": Infinity,
-  "mae": Infinity,
-  "r2": -Infinity,
+  "best_model": "XGBoost",
+  "rmse": 15.8891,
+  "mse": 252.4647,
+  "mae": 11.8372,
+  "r2": 0.7464,
   "train_samples": 730400,
   "val_samples": 182600,
   "total_samples": 913000,
   "all_models": {
     "LinearRegression": {
-      "rmse": Infinity,
-      "r2": -Infinity
+      "rmse": 29.9234,
+      "r2": 0.1004
     },
     "RandomForest": {
-      "rmse": Infinity,
-      "r2": -Infinity
+      "rmse": 24.1622,
+      "r2": 0.4134
     },
     "GradientBoosting": {
-      "rmse": Infinity,
-      "r2": -Infinity
+      "rmse": 19.9672,
+      "r2": 0.5994
     },
     "XGBoost": {
-      "rmse": Infinity,
-      "r2": -Infinity
+      "rmse": 15.8891,
+      "r2": 0.7464
     }
   }
 }
