@@ -6,6 +6,8 @@
 
 [![Python 3.11](https://img.shields.io/badge/python-3.11-blue.svg)](https://www.python.org/downloads/release/python-3110/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![DVC](https://img.shields.io/badge/DVC-Pipeline-945DD6?logo=dvc)](https://dvc.org/)
+[![MLflow](https://img.shields.io/badge/MLflow-Tracking-0194E2?logo=mlflow)](https://mlflow.org/)
 
 **Proyecto del Curso - Pipeline de MLOps para Predicción de Ventas**
 
@@ -22,6 +24,7 @@ Este proyecto implementa un **pipeline completo de MLOps** para la predicción d
 - ✅ Arquitectura modular y escalable
 - ✅ **API REST** para predicciones en tiempo real
 - ✅ **MLflow** para tracking de experimentos y model registry
+- ✅ **DVC** para versionado de datos y pipelines reproducibles
 
 ---
 
@@ -45,16 +48,20 @@ product_development/
 ├── 📄 README.md               <- Documentación principal del proyecto
 ├── 📄 pyproject.toml          <- Configuración del proyecto y dependencias
 ├── 📄 environment.yml         <- Entorno conda con todas las dependencias
+├── 📄 dvc.yaml                <- Definición del pipeline DVC
+├── 📄 params.yaml             <- Parámetros configurables del pipeline
 │
 ├── 📂 data/                   <- Datos del proyecto
 │   ├── external/              <- Datos de fuentes externas
 │   ├── processed/             <- Datos procesados listos para modelado
+│   │   ├── prepared_data.csv  <- Dataset con características temporales
 │   │   ├── preproc_train.csv  <- Dataset preprocesado
 │   │   └── test_predictions.csv <- Predicciones generadas
 │   └── raw/                   <- Datos originales (inmutables)
 │       └── train.csv          <- Dataset de entrenamiento (date, store, item, sales)
 │
 ├── 📂 docs/                   <- Documentación adicional del proyecto
+│   └── DVC_PIPELINE.md        <- Documentación del pipeline DVC
 │
 ├── 📂 models/                 <- Modelos entrenados serializados
 │   ├── feature_engineering_pipeline.pkl  <- Pipeline de ingeniería de características
@@ -74,6 +81,7 @@ product_development/
 ├── 📂 references/             <- Diccionarios de datos y materiales de referencia
 │
 ├── 📂 reports/                <- Reportes y análisis generados
+│   ├── metrics.json           <- Métricas del modelo (generado por DVC)
 │   └── figures/               <- Gráficos y figuras para reportes
 │
 ├── 📂 tests/                  <- Pruebas unitarias
@@ -81,6 +89,8 @@ product_development/
 │   └── test_api_examples.py   <- Ejemplos de consumo de la API
 │
 ├── 📂 scripts/                <- Scripts auxiliares
+│   ├── dvc_train.py           <- Script de entrenamiento para DVC
+│   ├── dvc_inference.py       <- Script de inferencia para DVC
 │   └── run_api_simple.py      <- Script simple para ejecutar la API
 │
 └── 📂 product_development/    <- 📦 Código fuente del paquete
@@ -148,6 +158,66 @@ Evaluación de múltiples algoritmos:
 - Carga del pipeline entrenado
 - Generación de predicciones
 - Evaluación de métricas (RMSE)
+
+---
+
+## 🔄 Pipeline DVC
+
+El proyecto incluye un **pipeline DVC** para automatizar y reproducir el flujo de trabajo completo.
+
+### Estructura del Pipeline
+
+```
+prepare_data → feature_engineering → train_model → inference
+```
+
+| Etapa | Entrada | Salida | Descripción |
+|-------|---------|--------|-------------|
+| `prepare_data` | `data/raw/train.csv` | `data/processed/prepared_data.csv` | Carga datos y agrega features temporales |
+| `feature_engineering` | `prepared_data.csv` | `feature_engineering_pipeline.pkl` | Construye pipeline de características |
+| `train_model` | `prepared_data.csv`, `pipeline.pkl` | `sales_pipeline.pkl`, `metrics.json` | Entrena y evalúa modelos |
+| `inference` | `prepared_data.csv`, `sales_pipeline.pkl` | `test_predictions.csv` | Genera predicciones |
+
+### Comandos DVC
+
+```bash
+# Ejecutar todo el pipeline
+dvc repro
+
+# Ejecutar una etapa específica
+dvc repro train_model
+
+# Ver estado del pipeline
+dvc status
+
+# Ver grafo de dependencias
+dvc dag
+
+# Ver métricas
+dvc metrics show
+
+# Comparar métricas entre experimentos
+dvc metrics diff
+```
+
+### Parámetros del Pipeline (`params.yaml`)
+
+```yaml
+data:
+  train_test_split_ratio: 0.8    # Proporción train/test
+  random_state: 2025             # Semilla para reproducibilidad
+
+training:
+  mode: "fast"                   # "fast" o "full"
+  use_mlflow: true               # Registrar en MLflow
+
+mlflow:
+  tracking_uri: "mlruns"
+  experiment_name: "sales_prediction"
+  model_name: "sales_prediction_model"
+```
+
+> 📖 Para más detalles, consulta [docs/DVC_PIPELINE.md](docs/DVC_PIPELINE.md)
 
 ---
 
@@ -242,6 +312,30 @@ print(response.json())
 ```bash
 # Ejecutar ejemplos de prueba
 python tests/test_api_examples.py
+```
+
+---
+
+## 🚀 Inicio Rápido
+
+```bash
+# 1. Clonar el repositorio
+git clone https://github.com/franciscogonzalez-gal/product_development.git
+cd product_development
+
+# 2. Crear entorno e instalar dependencias
+conda env create -f environment.yml
+conda activate product_development
+pip install -e .
+
+# 3. Ejecutar el pipeline DVC
+dvc repro
+
+# 4. Ver métricas
+dvc metrics show
+
+# 5. Iniciar la API
+python -m product_development.run_api
 ```
 
 ---
@@ -373,11 +467,11 @@ mlflow ui --backend-store-uri mlruns
 | **Visualización** | Matplotlib, Seaborn |
 | **Análisis Estadístico** | Statsmodels |
 | **API REST** | Flask |
-| **MLOps** | MLflow |
+| **MLOps** | MLflow, DVC |
 | **CLI** | Typer |
 | **Logging** | Loguru |
 | **Serialización** | Joblib |
-| **Configuración** | python-dotenv |
+| **Configuración** | python-dotenv, PyYAML |
 
 ---
 
@@ -419,6 +513,47 @@ python tests/test_api_examples.py
 
 ---
 
+## 🛠️ Comandos Makefile
+
+El proyecto incluye un `Makefile` con comandos útiles:
+
+```bash
+# Ver todos los comandos disponibles
+make help
+
+# Instalar dependencias
+make requirements
+
+# Ejecutar pipeline completo
+make pipeline
+
+# Solo inferencia (usando modelo existente)
+make inference
+
+# Entrenar modelo
+make train
+
+# Ejecutar pruebas
+make test
+
+# Formatear código
+make format
+
+# Linting
+make lint
+
+# Ejecutar pylint
+make pylint
+
+# Limpiar archivos compilados
+make clean
+
+# Crear entorno conda
+make create_environment
+```
+
+---
+
 ## 📈 Métricas de Evaluación
 
 El modelo se evalúa utilizando:
@@ -427,13 +562,15 @@ El modelo se evalúa utilizando:
 - **R²** (Coeficiente de determinación): Varianza explicada
 - **MSE** (Mean Square Error): Error cuadrático medio
 
-### Resultados del Modelo
+### Modelos Evaluados
 
-| Métrica | Valor |
-|---------|-------|
-| RMSE | ~13.09 |
-| MAE | ~10.25 |
-| R² | ~0.91 |
+El pipeline evalúa automáticamente los siguientes modelos:
+- Regresión Lineal
+- Random Forest
+- Gradient Boosting
+- XGBoost
+
+El mejor modelo se selecciona automáticamente basándose en RMSE y se registra en MLflow.
 
 ---
 
