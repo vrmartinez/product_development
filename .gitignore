@@ -188,3 +188,6 @@ mlruns/
 mlflow.db
 mlartifacts/
 *.mlflow
+
+# PDF files
+*.pdf
