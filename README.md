@@ -605,7 +605,10 @@ El mejor modelo se selecciona automáticamente basándose en RMSE y se registra 
 
 ## 👥 Autores
 
-- **Francisco González** - [franciscogonzalez-gal](https://github.com/franciscogonzalez-gal) - Universidad Galileo
+- **Francisco González** - [GitHub](https://github.com/franciscogonzalez-gal) | [LinkedIn](https://www.linkedin.com/in/franciscogonzalez/) - Universidad Galileo
+- **Natalie Medina** - [LinkedIn](https://www.linkedin.com/in/natalie-medina-/) - Universidad Galileo
+- **Karlo Van Tuylen** - [LinkedIn](https://www.linkedin.com/in/karl-van-tuylen-mota-3b10662a4/) - Universidad Galileo
+- **Vincent Martínez** - [LinkedIn](https://www.linkedin.com/in/vincentmart%C3%ADnez/) - Universidad Galileo
 
 ---
 
