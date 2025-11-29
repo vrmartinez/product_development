@@ -5,7 +5,7 @@
 </a>
 
 [![Python 3.11](https://img.shields.io/badge/python-3.11-blue.svg)](https://www.python.org/downloads/release/python-3110/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![License: CC BY 4.0](https://img.shields.io/badge/License-CC%20BY%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by/4.0/)
 [![DVC](https://img.shields.io/badge/DVC-Pipeline-945DD6?logo=dvc)](https://dvc.org/)
 [![MLflow](https://img.shields.io/badge/MLflow-Tracking-0194E2?logo=mlflow)](https://mlflow.org/)
 [![Flask](https://img.shields.io/badge/Flask-API-000000?logo=flask)](https://flask.palletsprojects.com/)
@@ -44,7 +44,7 @@ Desarrollar un sistema de predicción de ventas que permita:
 ```
 product_development/
 │
-├── 📄 LICENSE                 <- Licencia de código abierto (MIT)
+├── 📄 LICENSE                 <- Licencia de código abierto (CC BY 4.0)
 ├── 📄 Makefile                <- Comandos útiles (make data, make train, etc.)
 ├── 📄 README.md               <- Documentación principal del proyecto
 ├── 📄 pyproject.toml          <- Configuración del proyecto y dependencias
@@ -611,7 +611,7 @@ El mejor modelo se selecciona automáticamente basándose en RMSE y se registra 
 
 ## 📄 Licencia
 
-Este proyecto está bajo la Licencia MIT - ver el archivo [LICENSE](LICENSE) para más detalles.
+Este proyecto está bajo la Licencia Creative Commons Attribution 4.0 International (CC BY 4.0) - ver el archivo [LICENSE](LICENSE) para más detalles.
 
 ---
 
