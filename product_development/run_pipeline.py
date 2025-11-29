@@ -252,30 +252,10 @@ def run_inference_pipeline(
 
 @app.command()
 def main(
-    input_path: Path = typer.Option(
-        TRAIN_DATA_FILE,
-        "--input-path",
-        "-i",
-        help="Ruta a los datos crudos de entrenamiento"
-    ),
-    output_path: Path = typer.Option(
-        PREDICTIONS_FILE,
-        "--output-path",
-        "-o",
-        help="Ruta para guardar las predicciones"
-    ),
-    skip_training: bool = typer.Option(
-        False,
-        "--skip-training",
-        "-s",
-        help="Omitir entrenamiento del modelo y usar pipeline existente"
-    ),
-    inference_data_path: Optional[Path] = typer.Option(
-        None,
-        "--inference-data",
-        "-d",
-        help="Ruta a los datos para inferencia (por defecto usa división de prueba)"
-    ),
+    input_path: Path = TRAIN_DATA_FILE,
+    output_path: Path = PREDICTIONS_FILE,
+    skip_training: bool = False,
+    inference_data_path: Optional[Path] = None,
 ):
     """
     Ejecuta el pipeline completo de MLOps.

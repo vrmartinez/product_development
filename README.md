@@ -20,6 +20,8 @@ Este proyecto implementa un **pipeline completo de MLOps** para la predicción d
 - ✅ Entrenamiento y selección de modelos
 - ✅ Pipeline de inferencia reproducible
 - ✅ Arquitectura modular y escalable
+- ✅ **API REST** para predicciones en tiempo real
+- ✅ **MLflow** para tracking de experimentos y model registry
 
 ---
 
@@ -58,6 +60,9 @@ product_development/
 │   ├── feature_engineering_pipeline.pkl  <- Pipeline de ingeniería de características
 │   └── sales_pipeline.pkl                <- Pipeline completo de predicción
 │
+├── 📂 mlruns/                 <- Directorio de MLflow para tracking
+│   └── ...                    <- Experimentos, métricas y artefactos
+│
 ├── 📂 notebooks/              <- Jupyter notebooks del flujo de trabajo
 │   ├── 01_Data_Exploration.ipynb      <- EDA: análisis y visualizaciones
 │   ├── 02_feature_exploration.ipynb   <- Exploración de características
@@ -72,7 +77,11 @@ product_development/
 │   └── figures/               <- Gráficos y figuras para reportes
 │
 ├── 📂 tests/                  <- Pruebas unitarias
-│   └── test_data.py           <- Tests de validación de datos
+│   ├── test_data.py           <- Tests de validación de datos
+│   └── test_api_examples.py   <- Ejemplos de consumo de la API
+│
+├── 📂 scripts/                <- Scripts auxiliares
+│   └── run_api_simple.py      <- Script simple para ejecutar la API
 │
 └── 📂 product_development/    <- 📦 Código fuente del paquete
     │
@@ -83,6 +92,8 @@ product_development/
     ├── plots.py               <- Funciones de visualización
     ├── transformers.py        <- Transformadores personalizados de sklearn
     ├── run_pipeline.py        <- Script principal del pipeline MLOps
+    ├── api.py                 <- 🌐 API REST Flask para predicciones
+    ├── run_api.py             <- Script para ejecutar la API
     │
     └── modeling/              <- Submódulo de modelado
         ├── __init__.py
@@ -137,6 +148,101 @@ Evaluación de múltiples algoritmos:
 - Carga del pipeline entrenado
 - Generación de predicciones
 - Evaluación de métricas (RMSE)
+
+---
+
+## 🌐 API REST
+
+El proyecto incluye una **API REST** construida con Flask para realizar predicciones en tiempo real.
+
+### Iniciar la API
+
+```bash
+# Opción 1: Usando el módulo principal
+python -m product_development.run_api
+
+# Opción 2: Con opciones personalizadas
+python -m product_development.run_api --host 0.0.0.0 --port 5000 --debug
+
+# Opción 3: Script simple (sin dependencias adicionales)
+python scripts/run_api_simple.py
+```
+
+### Endpoints Disponibles
+
+| Endpoint | Método | Descripción |
+|----------|--------|-------------|
+| `/` | GET | Información de la API |
+| `/health` | GET | Health check del servicio |
+| `/model/info` | GET | Información del modelo (métricas, hiperparámetros) |
+| `/predict` | POST | Predicción individual |
+| `/predict/batch` | POST | Predicción por lote |
+
+### Ejemplos de Uso
+
+#### Predicción Individual
+
+```bash
+curl -X POST http://localhost:5000/predict \
+  -H "Content-Type: application/json" \
+  -d '{"store": 1, "item": 1, "date": "2018-01-15"}'
+```
+
+**Respuesta:**
+```json
+{
+  "predictions": [42.35],
+  "model_metrics": {"rmse": 13.08, "mae": 10.25, "r2": 0.91},
+  "timestamp": "2024-01-15T10:30:00",
+  "prediction_count": 1
+}
+```
+
+#### Predicción por Lote (Batch)
+
+```bash
+curl -X POST http://localhost:5000/predict/batch \
+  -H "Content-Type: application/json" \
+  -d '{
+    "data": [
+      {"store": 1, "item": 1, "date": "2018-01-15"},
+      {"store": 2, "item": 3, "date": "2018-01-16"},
+      {"store": 5, "item": 10, "date": "2018-02-01"}
+    ]
+  }'
+```
+
+#### Usando Python
+
+```python
+import requests
+
+# Predicción individual
+response = requests.post(
+    "http://localhost:5000/predict",
+    json={"store": 1, "item": 1, "date": "2018-01-15"}
+)
+print(response.json())
+
+# Predicción batch
+response = requests.post(
+    "http://localhost:5000/predict/batch",
+    json={
+        "data": [
+            {"store": 1, "item": 1, "date": "2018-01-15"},
+            {"store": 2, "item": 3, "date": "2018-01-16"}
+        ]
+    }
+)
+print(response.json())
+```
+
+### Probar la API
+
+```bash
+# Ejecutar ejemplos de prueba
+python tests/test_api_examples.py
+```
 
 ---
 
@@ -224,6 +330,38 @@ predictions = load_and_predict(prepared_data)
 
 ---
 
+## 📊 MLflow - Tracking de Experimentos
+
+El proyecto utiliza **MLflow** para el seguimiento de experimentos y registro de modelos.
+
+### Configuración de MLflow
+
+```python
+# En config.py
+MLFLOW_TRACKING_URI = "mlruns"           # URI del servidor de tracking
+MLFLOW_EXPERIMENT_NAME = "sales_prediction"
+MLFLOW_MODEL_NAME = "sales_prediction_model"
+MLFLOW_CHAMPION_ALIAS = "champion"       # Alias del modelo en producción
+```
+
+### Ver Experimentos
+
+```bash
+# Iniciar la UI de MLflow
+mlflow ui --backend-store-uri mlruns
+
+# Abrir en el navegador: http://localhost:5000
+```
+
+### Características de MLflow en el Proyecto
+
+- 📈 **Tracking de métricas**: RMSE, MAE, R², MSE
+- 🔧 **Registro de hiperparámetros**: Parámetros del modelo
+- 📦 **Model Registry**: Gestión de versiones de modelos
+- 🏷️ **Aliases**: Champion/Challenger para promoción de modelos
+
+---
+
 ## 🛠️ Tecnologías Utilizadas
 
 | Categoría | Tecnologías |
@@ -234,9 +372,12 @@ predictions = load_and_predict(prepared_data)
 | **Ingeniería de Características** | Feature-engine |
 | **Visualización** | Matplotlib, Seaborn |
 | **Análisis Estadístico** | Statsmodels |
+| **API REST** | Flask |
+| **MLOps** | MLflow |
 | **CLI** | Typer |
 | **Logging** | Loguru |
 | **Serialización** | Joblib |
+| **Configuración** | python-dotenv |
 
 ---
 
@@ -271,6 +412,9 @@ pytest tests/
 
 # Ejecutar con cobertura
 pytest tests/ --cov=product_development
+
+# Probar ejemplos de la API (requiere que la API esté corriendo)
+python tests/test_api_examples.py
 ```
 
 ---
@@ -279,7 +423,17 @@ pytest tests/ --cov=product_development
 
 El modelo se evalúa utilizando:
 - **RMSE** (Root Mean Square Error): Métrica principal de evaluación
-- Comparación de predicciones vs valores reales
+- **MAE** (Mean Absolute Error): Error absoluto promedio
+- **R²** (Coeficiente de determinación): Varianza explicada
+- **MSE** (Mean Square Error): Error cuadrático medio
+
+### Resultados del Modelo
+
+| Métrica | Valor |
+|---------|-------|
+| RMSE | ~13.09 |
+| MAE | ~10.25 |
+| R² | ~0.91 |
 
 ---
 
