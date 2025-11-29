@@ -91,7 +91,8 @@ product_development/
 ├── 📂 scripts/                <- Scripts auxiliares
 │   ├── dvc_train.py           <- Script de entrenamiento para DVC
 │   ├── dvc_inference.py       <- Script de inferencia para DVC
-│   └── run_api_simple.py      <- Script simple para ejecutar la API
+│   ├── run_api.py             <- Script para ejecutar la API
+│   └── run_pipeline.py        <- Script principal del pipeline MLOps
 │
 └── 📂 product_development/    <- 📦 Código fuente del paquete
     │
@@ -101,9 +102,7 @@ product_development/
     ├── features.py            <- Pipeline de ingeniería de características
     ├── plots.py               <- Funciones de visualización
     ├── transformers.py        <- Transformadores personalizados de sklearn
-    ├── run_pipeline.py        <- Script principal del pipeline MLOps
     ├── api.py                 <- 🌐 API REST Flask para predicciones
-    ├── run_api.py             <- Script para ejecutar la API
     │
     └── modeling/              <- Submódulo de modelado
         ├── __init__.py
@@ -203,14 +202,34 @@ dvc metrics diff
 ### Parámetros del Pipeline (`params.yaml`)
 
 ```yaml
+# Configuración de división de datos
 data:
   train_test_split_ratio: 0.8    # Proporción train/test
   random_state: 2025             # Semilla para reproducibilidad
 
+# Configuración de características
+features:
+  target: "sales"
+  feature_columns:
+    - "store"
+    - "item"
+    - "year"
+    - "month"
+    - "day_of_week_name"
+  categorical_vars:
+    - "store"
+    - "item"
+    - "day_of_week_name"
+  numerical_vars:
+    - "year"
+    - "month"
+
+# Configuración de entrenamiento
 training:
   mode: "fast"                   # "fast" o "full"
   use_mlflow: true               # Registrar en MLflow
 
+# Configuración de MLflow
 mlflow:
   tracking_uri: "mlruns"
   experiment_name: "sales_prediction"
@@ -228,14 +247,14 @@ El proyecto incluye una **API REST** construida con Flask para realizar predicci
 ### Iniciar la API
 
 ```bash
-# Opción 1: Usando el módulo principal
-python -m product_development.run_api
+# Opción 1: Usando el script de scripts/
+python scripts/run_api.py
 
 # Opción 2: Con opciones personalizadas
-python -m product_development.run_api --host 0.0.0.0 --port 5000 --debug
+python scripts/run_api.py --host 0.0.0.0 --port 5000 --debug
 
-# Opción 3: Script simple (sin dependencias adicionales)
-python scripts/run_api_simple.py
+# Opción 3: Ejecutando directamente el módulo api
+python -m product_development.api
 ```
 
 ### Endpoints Disponibles
@@ -335,7 +354,7 @@ dvc repro
 dvc metrics show
 
 # 5. Iniciar la API
-python -m product_development.run_api
+python scripts/run_api.py
 ```
 
 ---
@@ -386,13 +405,13 @@ pip install -e .
 
 ```bash
 # Ejecutar pipeline completo (entrenamiento + inferencia)
-python -m product_development.run_pipeline
+python scripts/run_pipeline.py
 
 # Solo inferencia (usando modelo existente)
-python -m product_development.run_pipeline --skip-training
+python scripts/run_pipeline.py --skip-training
 
 # Especificar rutas personalizadas
-python -m product_development.run_pipeline \
+python scripts/run_pipeline.py \
     --input-path data/raw/train.csv \
     --output-path data/processed/predictions.csv
 ```
@@ -507,6 +526,9 @@ pytest tests/
 # Ejecutar con cobertura
 pytest tests/ --cov=product_development
 
+# Ejecutar pruebas de datos
+pytest tests/test_data.py
+
 # Probar ejemplos de la API (requiere que la API esté corriendo)
 python tests/test_api_examples.py
 ```
@@ -576,7 +598,7 @@ El mejor modelo se selecciona automáticamente basándose en RMSE y se registra 
 
 ## 👥 Autores
 
-- **Galileo Team** - Universidad Galileo
+- **Francisco González** - [franciscogonzalez-gal](https://github.com/franciscogonzalez-gal) - Universidad Galileo
 
 ---
 
