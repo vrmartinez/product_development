@@ -16,7 +16,9 @@
 
 ## 📋 Descripción
 
-Este proyecto implementa un **pipeline completo de MLOps** para la predicción de ventas utilizando técnicas de machine learning. El sistema está diseñado siguiendo las mejores prácticas de ciencia de datos e ingeniería de software, incluyendo:
+Este proyecto implementa un sistema de predicción de ventas (**pipeline completo de MLOps**) para cadenas de tiendas, pensado para apoyar decisiones de inventario y planificación. A partir de históricos de ventas por tienda y artículo, genera un pipeline MLOps reproducible (DVC + MLflow + API Flask) listo para integrarse en entornos de analítica o producción.
+
+El sistema está diseñado siguiendo las mejores prácticas de ciencia de datos e ingeniería de software, incluyendo:
 
 - ✅ Análisis exploratorio de datos (EDA)
 - ✅ Ingeniería de características automatizada
