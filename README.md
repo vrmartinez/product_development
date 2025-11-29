@@ -61,6 +61,7 @@ product_development/
 │       └── train.csv          <- Dataset de entrenamiento (date, store, item, sales)
 │
 ├── 📂 docs/                   <- Documentación adicional del proyecto
+│   ├── API_DOCUMENTATION.md   <- 📖 Documentación completa de la API REST
 │   └── DVC_PIPELINE.md        <- Documentación del pipeline DVC
 │
 ├── 📂 models/                 <- Modelos entrenados serializados
@@ -243,6 +244,8 @@ mlflow:
 ## 🌐 API REST
 
 El proyecto incluye una **API REST** construida con Flask para realizar predicciones en tiempo real.
+
+> 📖 **Documentación completa de la API:** [docs/API_DOCUMENTATION.md](docs/API_DOCUMENTATION.md)
 
 ### Iniciar la API
 
