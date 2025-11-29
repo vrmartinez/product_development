@@ -1,12 +1,18 @@
+"""
+Módulo de configuración para el pipeline de MLOps de product_development.
+
+Este módulo contiene todas las rutas, constantes y parámetros de configuración
+utilizados a lo largo del pipeline.
+"""
 from pathlib import Path
 
 from dotenv import load_dotenv
 from loguru import logger
 
-# Load environment variables from .env file if it exists
+# Cargar variables de entorno desde archivo .env si existe
 load_dotenv()
 
-# Paths
+# Rutas del proyecto
 PROJ_ROOT = Path(__file__).resolve().parents[1]
 logger.info(f"PROJ_ROOT path is: {PROJ_ROOT}")
 
@@ -21,7 +27,36 @@ MODELS_DIR = PROJ_ROOT / "models"
 REPORTS_DIR = PROJ_ROOT / "reports"
 FIGURES_DIR = REPORTS_DIR / "figures"
 
-# If tqdm is installed, configure loguru with tqdm.write
+# Archivos del dataset
+TRAIN_DATA_FILE = RAW_DATA_DIR / "train.csv"
+PIPELINE_FILE = MODELS_DIR / "sales_pipeline.pkl"
+FEATURE_PIPELINE_FILE = MODELS_DIR / "feature_engineering_pipeline.pkl"
+PREDICTIONS_FILE = PROCESSED_DATA_DIR / "test_predictions.csv"
+
+# Configuración de características
+TARGET = "sales"
+FEATURES = ["store", "item", "year", "month", "day_of_week_name"]
+CATEGORICAL_VARS = ["store", "item", "day_of_week_name"]
+CATEGORICAL_VARS_IMPUTE = ["store", "item"]
+CATEGORICAL_VARS_FREQ = ["store", "item"]
+NUMERICAL_VARS = ["year", "month"]
+
+# Mapeo de días de la semana
+DAY_OF_WEEK_MAPPING = {
+    "Monday": 0,
+    "Tuesday": 1,
+    "Wednesday": 2,
+    "Thursday": 3,
+    "Friday": 4,
+    "Saturday": 5,
+    "Sunday": 6
+}
+
+# Configuración de entrenamiento del modelo
+TRAIN_TEST_SPLIT_RATIO = 0.8
+RANDOM_STATE = 2025
+
+# Si tqdm está instalado, configurar loguru con tqdm.write
 # https://github.com/Delgan/loguru/issues/135
 try:
     from tqdm import tqdm

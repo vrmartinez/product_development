@@ -15,8 +15,7 @@ PYTHON_INTERPRETER = python
 .PHONY: requirements
 requirements:
 	$(PYTHON_INTERPRETER) -m pip install -U pip
-	$(PYTHON_INTERPRETER) -m pip install -r requirements.txt
-	
+	$(PYTHON_INTERPRETER) -m pip install -e .
 
 
 
@@ -39,7 +38,10 @@ format:
 	ruff check --fix
 	ruff format
 
-
+## Run pylint on the package
+.PHONY: pylint
+pylint:
+	$(PYTHON_INTERPRETER) -m pylint product_development --rcfile=.pylintrc
 
 ## Run tests
 .PHONY: test
@@ -50,9 +52,7 @@ test:
 ## Set up Python interpreter environment
 .PHONY: create_environment
 create_environment:
-	
-	conda create --name $(PROJECT_NAME) python=$(PYTHON_VERSION) -y
-	
+	conda env create -f environment.yml
 	@echo ">>> conda env created. Activate with:\nconda activate $(PROJECT_NAME)"
 	
 
@@ -68,6 +68,20 @@ create_environment:
 data: requirements
 	$(PYTHON_INTERPRETER) product_development/dataset.py
 
+## Run the complete MLOps pipeline
+.PHONY: pipeline
+pipeline: requirements
+	$(PYTHON_INTERPRETER) -m product_development.run_pipeline
+
+## Run pipeline with skip training (inference only)
+.PHONY: inference
+inference:
+	$(PYTHON_INTERPRETER) -m product_development.run_pipeline --skip-training
+
+## Train model only
+.PHONY: train
+train: requirements
+	$(PYTHON_INTERPRETER) -m product_development.modeling.train
 
 #################################################################################
 # Self Documenting Commands                                                     #

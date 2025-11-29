@@ -1,0 +1,29 @@
+[MAIN]
+py-version = 3.11
+jobs = 0
+load-plugins =
+
+[MESSAGES CONTROL]
+disable =
+    missing-module-docstring,
+    too-many-arguments,
+    too-many-locals,
+    import-error,
+    no-name-in-module,
+    too-few-public-methods,
+    duplicate-code
+
+[FORMAT]
+max-line-length = 99
+
+[DESIGN]
+max-args = 10
+max-locals = 20
+max-attributes = 10
+max-public-methods = 25
+
+[SIMILARITIES]
+min-similarity-lines = 10
+
+[TYPECHECK]
+ignored-modules = numpy,pandas,sklearn,feature_engine,xgboost,loguru,typer
