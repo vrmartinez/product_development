@@ -1,0 +1,35 @@
+# Parámetros del pipeline de MLOps para predicción de ventas
+# Este archivo es usado por DVC para parametrizar las etapas del pipeline
+
+# Configuración de división de datos
+data:
+  train_test_split_ratio: 0.8
+  random_state: 2025
+
+# Configuración de características
+features:
+  target: "sales"
+  feature_columns:
+    - "store"
+    - "item"
+    - "year"
+    - "month"
+    - "day_of_week_name"
+  categorical_vars:
+    - "store"
+    - "item"
+    - "day_of_week_name"
+  numerical_vars:
+    - "year"
+    - "month"
+
+# Configuración de entrenamiento
+training:
+  mode: "fast"  # "fast" o "full"
+  use_mlflow: true
+  
+# Configuración de MLflow
+mlflow:
+  tracking_uri: "mlruns"
+  experiment_name: "sales_prediction"
+  model_name: "sales_prediction_model"

@@ -1,0 +1,108 @@
+schema: '2.0'
+stages:
+  prepare_data:
+    cmd: python -m product_development.dataset data/raw/train.csv 
+      data/processed/prepared_data.csv
+    deps:
+    - path: data/raw/train.csv
+      hash: md5
+      md5: 8e01df980e9eaff288974b47e15942ed
+      size: 18246450
+    - path: product_development/config.py
+      hash: md5
+      md5: c3bdd2ccd2833659ec6579b177aac6cd
+      size: 2324
+    - path: product_development/dataset.py
+      hash: md5
+      md5: aabd52cc88b321b52b35ffc442e29f0e
+      size: 5575
+    outs:
+    - path: data/processed/prepared_data.csv
+      hash: md5
+      md5: 32a96ec38b45efcaa9011396538a0b89
+      size: 32302478
+  feature_engineering:
+    cmd: python -m product_development.features data/processed/prepared_data.csv
+      models/feature_engineering_pipeline.pkl
+    deps:
+    - path: data/processed/prepared_data.csv
+      hash: md5
+      md5: 32a96ec38b45efcaa9011396538a0b89
+      size: 32302478
+    - path: product_development/config.py
+      hash: md5
+      md5: c3bdd2ccd2833659ec6579b177aac6cd
+      size: 2324
+    - path: product_development/features.py
+      hash: md5
+      md5: 62688d797882a67b0a33e585c0c246ca
+      size: 6297
+    - path: product_development/transformers.py
+      hash: md5
+      md5: e98d70c54bf798edeae59298259d9c32
+      size: 3841
+    outs:
+    - path: models/feature_engineering_pipeline.pkl
+      hash: md5
+      md5: c895e7ddb69647de117da304993f8356
+      size: 2944
+  train_model:
+    cmd: python scripts/dvc_train.py
+    deps:
+    - path: data/processed/prepared_data.csv
+      hash: md5
+      md5: 32a96ec38b45efcaa9011396538a0b89
+      size: 32302478
+    - path: models/feature_engineering_pipeline.pkl
+      hash: md5
+      md5: c895e7ddb69647de117da304993f8356
+      size: 2944
+    - path: product_development/config.py
+      hash: md5
+      md5: c3bdd2ccd2833659ec6579b177aac6cd
+      size: 2324
+    - path: product_development/modeling/train.py
+      hash: md5
+      md5: 29b451c8d894819a2577a4bd0c2a4498
+      size: 22023
+    - path: scripts/dvc_train.py
+      hash: md5
+      md5: b75c22e411c395795911f51f87548173
+      size: 7440
+    outs:
+    - path: models/sales_pipeline.pkl
+      hash: md5
+      md5: f94a03ca4a08090db9c0a75a6869e77e
+      size: 3387
+    - path: reports/metrics.json
+      hash: md5
+      md5: 19eab4de64eb8690d6488d13ffba1580
+      size: 546
+  inference:
+    cmd: python scripts/dvc_inference.py
+    deps:
+    - path: data/processed/prepared_data.csv
+      hash: md5
+      md5: 32a96ec38b45efcaa9011396538a0b89
+      size: 32302478
+    - path: models/sales_pipeline.pkl
+      hash: md5
+      md5: f94a03ca4a08090db9c0a75a6869e77e
+      size: 3387
+    - path: product_development/config.py
+      hash: md5
+      md5: c3bdd2ccd2833659ec6579b177aac6cd
+      size: 2324
+    - path: product_development/modeling/predict.py
+      hash: md5
+      md5: ee8e184144559ec33d29528c2a797ac8
+      size: 5622
+    - path: scripts/dvc_inference.py
+      hash: md5
+      md5: fbb68229a8c12502756bde8eb94f7b85
+      size: 4210
+    outs:
+    - path: data/processed/test_predictions.csv
+      hash: md5
+      md5: 26f0ce66934c594b5ede947a9513b66a
+      size: 9777756

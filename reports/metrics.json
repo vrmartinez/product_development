@@ -1,0 +1,28 @@
+{
+  "best_model": "LinearRegression",
+  "rmse": Infinity,
+  "mse": Infinity,
+  "mae": Infinity,
+  "r2": -Infinity,
+  "train_samples": 730400,
+  "val_samples": 182600,
+  "total_samples": 913000,
+  "all_models": {
+    "LinearRegression": {
+      "rmse": Infinity,
+      "r2": -Infinity
+    },
+    "RandomForest": {
+      "rmse": Infinity,
+      "r2": -Infinity
+    },
+    "GradientBoosting": {
+      "rmse": Infinity,
+      "r2": -Infinity
+    },
+    "XGBoost": {
+      "rmse": Infinity,
+      "r2": -Infinity
+    }
+  }
+}

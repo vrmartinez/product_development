@@ -1,0 +1,47 @@
+stages:
+  prepare_data:
+    cmd: python -m product_development.dataset data/raw/train.csv data/processed/prepared_data.csv
+    deps:
+      - data/raw/train.csv
+      - product_development/dataset.py
+      - product_development/config.py
+    outs:
+      - data/processed/prepared_data.csv
+
+  feature_engineering:
+    cmd: python -m product_development.features data/processed/prepared_data.csv models/feature_engineering_pipeline.pkl
+    deps:
+      - data/processed/prepared_data.csv
+      - product_development/features.py
+      - product_development/transformers.py
+      - product_development/config.py
+    outs:
+      - models/feature_engineering_pipeline.pkl:
+          cache: false
+
+  train_model:
+    cmd: python scripts/dvc_train.py
+    deps:
+      - data/processed/prepared_data.csv
+      - models/feature_engineering_pipeline.pkl
+      - product_development/modeling/train.py
+      - product_development/config.py
+      - scripts/dvc_train.py
+    outs:
+      - models/sales_pipeline.pkl:
+          cache: false
+    metrics:
+      - reports/metrics.json:
+          cache: false
+
+  inference:
+    cmd: python scripts/dvc_inference.py
+    deps:
+      - data/processed/prepared_data.csv
+      - models/sales_pipeline.pkl
+      - product_development/modeling/predict.py
+      - product_development/config.py
+      - scripts/dvc_inference.py
+    outs:
+      - data/processed/test_predictions.csv:
+          cache: false

@@ -173,8 +173,8 @@ def get_full_dataset(data: pd.DataFrame) -> Tuple[pd.DataFrame, pd.Series]:
 
 @app.command()
 def main(
-    input_path: Path = RAW_DATA_DIR / "train.csv",
-    output_path: Path = PROCESSED_DATA_DIR / "prepared_data.csv",
+    input_path: Path = typer.Argument(RAW_DATA_DIR / "train.csv", help="Ruta al archivo de datos crudos"),
+    output_path: Path = typer.Argument(PROCESSED_DATA_DIR / "prepared_data.csv", help="Ruta para guardar los datos procesados"),
 ):
     """
     Función principal para procesar el dataset crudo y guardar los datos preparados.

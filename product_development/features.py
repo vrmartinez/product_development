@@ -176,8 +176,8 @@ def load_feature_pipeline(input_path: Path = FEATURE_PIPELINE_FILE) -> Pipeline:
 
 @app.command()
 def main(
-    input_path: Path = PROCESSED_DATA_DIR / "prepared_data.csv",
-    output_path: Path = MODELS_DIR / "feature_engineering_pipeline.pkl",
+    input_path: Path = typer.Argument(PROCESSED_DATA_DIR / "prepared_data.csv", help="Ruta al archivo de datos preparados"),
+    output_path: Path = typer.Argument(MODELS_DIR / "feature_engineering_pipeline.pkl", help="Ruta para guardar el pipeline ajustado"),
 ):
     """
     Función principal para construir y guardar el pipeline de ingeniería de características.

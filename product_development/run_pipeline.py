@@ -17,8 +17,13 @@ Opciones:
     --output-path RUTA   Ruta para guardar las predicciones
     --skip-training      Omitir entrenamiento del modelo (usar pipeline existente)
 """
-import time
+import sys
 from pathlib import Path
+
+# Agregar carpeta padre al path para permitir ejecución desde product_development/
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
+import time
 from typing import Optional
 
 import pandas as pd
@@ -252,10 +257,10 @@ def run_inference_pipeline(
 
 @app.command()
 def main(
-    input_path: Path = TRAIN_DATA_FILE,
-    output_path: Path = PREDICTIONS_FILE,
-    skip_training: bool = False,
-    inference_data_path: Optional[Path] = None,
+    input_path: Path = typer.Option(TRAIN_DATA_FILE, help="Ruta a los datos crudos de entrenamiento"),
+    output_path: Path = typer.Option(PREDICTIONS_FILE, help="Ruta para guardar las predicciones"),
+    skip_training: bool = typer.Option(False, "--skip-training", help="Omitir entrenamiento y usar pipeline existente"),
+    inference_data_path: Optional[Path] = typer.Option(None, help="Ruta a los datos para inferencia"),
 ):
     """
     Ejecuta el pipeline completo de MLOps.
