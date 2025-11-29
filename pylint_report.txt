@@ -1,0 +1,51 @@
+************* Module product_development.dataset
+product_development\dataset.py:146:4: C0103: Variable name "X_train" doesn't conform to snake_case naming style (invalid-name)
+product_development\dataset.py:148:4: C0103: Variable name "X_test" doesn't conform to snake_case naming style (invalid-name)
+product_development\dataset.py:169:4: C0103: Variable name "X" doesn't conform to snake_case naming style (invalid-name)
+************* Module product_development.features
+product_development\features.py:81:4: C0103: Argument name "X_train" doesn't conform to snake_case naming style (invalid-name)
+product_development\features.py:109:4: C0103: Argument name "X" doesn't conform to snake_case naming style (invalid-name)
+product_development\features.py:127:4: C0103: Variable name "X_transformed" doesn't conform to snake_case naming style (invalid-name)
+product_development\features.py:199:4: C0103: Variable name "X" doesn't conform to snake_case naming style (invalid-name)
+************* Module product_development.plots
+product_development\plots.py:122:8: C0104: Disallowed name "bar" (disallowed-name)
+************* Module product_development.run_pipeline
+product_development\run_pipeline.py:116:4: C0103: Variable name "X_train" doesn't conform to snake_case naming style (invalid-name)
+product_development\run_pipeline.py:116:13: C0103: Variable name "X_val" doesn't conform to snake_case naming style (invalid-name)
+product_development\run_pipeline.py:128:4: C0103: Variable name "X_train_transformed" doesn't conform to snake_case naming style (invalid-name)
+product_development\run_pipeline.py:129:4: C0103: Variable name "X_val_transformed" doesn't conform to snake_case naming style (invalid-name)
+product_development\run_pipeline.py:144:4: C0103: Argument name "X_train_transformed" doesn't conform to snake_case naming style (invalid-name)
+product_development\run_pipeline.py:145:4: C0103: Argument name "X_val_transformed" doesn't conform to snake_case naming style (invalid-name)
+product_development\run_pipeline.py:142:0: R0917: Too many positional arguments (6/5) (too-many-positional-arguments)
+product_development\run_pipeline.py:200:4: C0103: Variable name "X_full" doesn't conform to snake_case naming style (invalid-name)
+product_development\run_pipeline.py:240:4: C0103: Variable name "X" doesn't conform to snake_case naming style (invalid-name)
+product_development\run_pipeline.py:336:12: C0103: Variable name "X_train_transformed" doesn't conform to snake_case naming style (invalid-name)
+product_development\run_pipeline.py:337:12: C0103: Variable name "X_val_transformed" doesn't conform to snake_case naming style (invalid-name)
+product_development\run_pipeline.py:343:8: W0612: Unused variable 'results' (unused-variable)
+product_development\run_pipeline.py:343:17: W0612: Unused variable 'best_model_name' (unused-variable)
+product_development\run_pipeline.py:28:0: W0611: Unused FEATURES imported from product_development.config (unused-import)
+product_development\run_pipeline.py:28:0: W0611: Unused MODELS_DIR imported from product_development.config (unused-import)
+product_development\run_pipeline.py:28:0: W0611: Unused PIPELINE_FILE imported from product_development.config (unused-import)
+product_development\run_pipeline.py:28:0: W0611: Unused PROCESSED_DATA_DIR imported from product_development.config (unused-import)
+product_development\run_pipeline.py:28:0: W0611: Unused RAW_DATA_DIR imported from product_development.config (unused-import)
+************* Module product_development.transformers
+product_development\transformers.py:36:18: C0103: Argument name "X" doesn't conform to snake_case naming style (invalid-name)
+product_development\transformers.py:54:24: C0103: Argument name "X" doesn't conform to snake_case naming style (invalid-name)
+product_development\transformers.py:100:18: C0103: Argument name "X" doesn't conform to snake_case naming style (invalid-name)
+product_development\transformers.py:118:24: C0103: Argument name "X" doesn't conform to snake_case naming style (invalid-name)
+************* Module product_development.modeling.predict
+product_development\modeling\predict.py:30:4: C0103: Argument name "X" doesn't conform to snake_case naming style (invalid-name)
+product_development\modeling\predict.py:89:4: C0103: Variable name "X" doesn't conform to snake_case naming style (invalid-name)
+product_development\modeling\predict.py:149:4: C0103: Variable name "X" doesn't conform to snake_case naming style (invalid-name)
+************* Module product_development.modeling.train
+product_development\modeling\train.py:126:4: C0103: Argument name "X_train" doesn't conform to snake_case naming style (invalid-name)
+product_development\modeling\train.py:128:4: C0103: Argument name "X_val" doesn't conform to snake_case naming style (invalid-name)
+product_development\modeling\train.py:217:4: C0103: Argument name "X_full" doesn't conform to snake_case naming style (invalid-name)
+product_development\modeling\train.py:291:4: W0613: Unused argument 'features_path' (unused-argument)
+product_development\modeling\train.py:292:4: W0613: Unused argument 'labels_path' (unused-argument)
+product_development\modeling\train.py:293:4: W0613: Unused argument 'model_path' (unused-argument)
+product_development\modeling\train.py:313:4: W0612: Unused variable 'feature_pipeline' (unused-variable)
+
+------------------------------------------------------------------
+Your code has been rated at 9.10/10 (previous run: 9.10/10, +0.00)
+
