@@ -182,3 +182,9 @@ cython_debug/
 
 # VS Code
 .vscode/
+
+# MLflow
+mlruns/
+mlflow.db
+mlartifacts/
+*.mlflow

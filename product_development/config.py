@@ -56,6 +56,13 @@ DAY_OF_WEEK_MAPPING = {
 TRAIN_TEST_SPLIT_RATIO = 0.8
 RANDOM_STATE = 2025
 
+# Configuración de MLflow
+MLFLOW_TRACKING_URI = "mlruns"  # URI local para tracking (puede ser un servidor remoto)
+MLFLOW_EXPERIMENT_NAME = "sales_prediction"
+MLFLOW_MODEL_NAME = "sales_prediction_model"  # Nombre para el Model Registry
+MLFLOW_CHAMPION_ALIAS = "champion"  # Alias para el modelo campeón
+MLFLOW_CHALLENGER_ALIAS = "challenger"  # Alias para modelos challenger
+
 # Si tqdm está instalado, configurar loguru con tqdm.write
 # https://github.com/Delgan/loguru/issues/135
 try:
